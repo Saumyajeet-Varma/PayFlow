@@ -1,4 +1,4 @@
-package com.payflow.payflow.core.dto.response;
+package com.payflow.payflow.dto.response;
 
 public class ApiResponse<T> {
 

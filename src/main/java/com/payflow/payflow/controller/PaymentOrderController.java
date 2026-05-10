@@ -1,8 +1,8 @@
 package com.payflow.payflow.controller;
 
-import com.payflow.payflow.core.dto.request.CreateOrderRequest;
-import com.payflow.payflow.core.dto.response.ApiResponse;
-import com.payflow.payflow.core.dto.response.PaymentOrderResponse;
+import com.payflow.payflow.dto.request.CreateOrderRequest;
+import com.payflow.payflow.dto.response.ApiResponse;
+import com.payflow.payflow.dto.response.PaymentOrderResponse;
 import com.payflow.payflow.service.PaymentOrderService;
 import org.springframework.web.bind.annotation.*;
 

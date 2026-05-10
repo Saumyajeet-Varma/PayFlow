@@ -1,6 +1,6 @@
-package com.payflow.payflow.core.dto.response;
+package com.payflow.payflow.dto.response;
 
-import com.payflow.payflow.core.enums.PaymentStatus;
+import com.payflow.payflow.model.enums.PaymentStatus;
 
 public class PaymentOrderResponse {
 

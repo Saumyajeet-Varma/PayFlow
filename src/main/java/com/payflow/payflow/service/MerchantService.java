@@ -1,9 +1,9 @@
 package com.payflow.payflow.service;
 
-import com.payflow.payflow.core.dto.request.MerchantSignupRequest;
-import com.payflow.payflow.core.dto.response.ApiResponse;
-import com.payflow.payflow.core.dto.response.MerchantResponse;
-import com.payflow.payflow.core.entity.Merchant;
+import com.payflow.payflow.dto.request.MerchantSignupRequest;
+import com.payflow.payflow.dto.response.ApiResponse;
+import com.payflow.payflow.dto.response.MerchantResponse;
+import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.repository.MerchantRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package com.payflow.payflow.core.entity;
+package com.payflow.payflow.model.entity;
 
-import com.payflow.payflow.core.enums.PaymentStatus;
+import com.payflow.payflow.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 
 @Entity

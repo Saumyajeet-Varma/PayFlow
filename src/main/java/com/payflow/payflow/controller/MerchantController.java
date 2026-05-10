@@ -1,8 +1,8 @@
 package com.payflow.payflow.controller;
 
-import com.payflow.payflow.core.dto.request.MerchantSignupRequest;
-import com.payflow.payflow.core.dto.response.ApiResponse;
-import com.payflow.payflow.core.dto.response.MerchantResponse;
+import com.payflow.payflow.dto.request.MerchantSignupRequest;
+import com.payflow.payflow.dto.response.ApiResponse;
+import com.payflow.payflow.dto.response.MerchantResponse;
 import com.payflow.payflow.service.MerchantService;
 import org.springframework.web.bind.annotation.*;
 

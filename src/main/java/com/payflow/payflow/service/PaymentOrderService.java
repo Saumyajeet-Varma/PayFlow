@@ -1,11 +1,12 @@
 package com.payflow.payflow.service;
 
-import com.payflow.payflow.core.dto.request.CreateOrderRequest;
-import com.payflow.payflow.core.dto.response.ApiResponse;
-import com.payflow.payflow.core.dto.response.PaymentOrderResponse;
-import com.payflow.payflow.core.entity.Merchant;
-import com.payflow.payflow.core.entity.PaymentOrder;
-import com.payflow.payflow.core.enums.PaymentStatus;
+import com.payflow.payflow.dto.request.CreateOrderRequest;
+import com.payflow.payflow.dto.response.ApiResponse;
+import com.payflow.payflow.dto.response.PaymentOrderResponse;
+import com.payflow.payflow.exception.ResourceNotFoundException;
+import com.payflow.payflow.model.entity.Merchant;
+import com.payflow.payflow.model.entity.PaymentOrder;
+import com.payflow.payflow.model.enums.PaymentStatus;
 import com.payflow.payflow.repository.MerchantRepository;
 import com.payflow.payflow.repository.PaymentOrderRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class PaymentOrderService {
 
         Merchant merchant = merchantRepository
                 .findById(request.getMerchantId())
-                .orElseThrow(() -> new RuntimeException("Merchant Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant Not Found"));
 
         PaymentOrder order = new PaymentOrder();
 

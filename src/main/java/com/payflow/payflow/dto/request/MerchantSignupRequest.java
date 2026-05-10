@@ -1,4 +1,4 @@
-package com.payflow.payflow.core.dto.request;
+package com.payflow.payflow.dto.request;
 
 public class MerchantSignupRequest {
 
