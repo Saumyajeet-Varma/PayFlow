@@ -1,4 +1,4 @@
-package com.payflow.payflow.model.entity;
+package com.payflow.payflow.core.entity;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,7 @@
 package com.payflow.payflow.controller;
 
-import com.payflow.payflow.model.enums.PaymentStatus;
-import com.payflow.payflow.model.entity.PaymentOrder;
+import com.payflow.payflow.core.enums.PaymentStatus;
+import com.payflow.payflow.core.entity.PaymentOrder;
 import com.payflow.payflow.repository.PaymentOrderRepository;
 import org.springframework.web.bind.annotation.*;
 

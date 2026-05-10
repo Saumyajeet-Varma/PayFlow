@@ -1,6 +1,6 @@
-package com.payflow.payflow.model.entity;
+package com.payflow.payflow.core.entity;
 
-import com.payflow.payflow.model.enums.PaymentStatus;
+import com.payflow.payflow.core.enums.PaymentStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,14 +17,18 @@ public class PaymentOrder {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    public PaymentOrder() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "merchant_id")
+    private Merchant merchant;
 
-    public PaymentOrder(Long id, Double amount, String currency, PaymentStatus status) {
+    public PaymentOrder() {}
+
+    public PaymentOrder(Long id, Double amount, String currency, PaymentStatus status, Merchant merchant) {
         this.id = id;
         this.amount = amount;
         this.currency = currency;
         this.status = status;
+        this.merchant = merchant;
     }
 
     public Long getId() {
@@ -53,5 +57,13 @@ public class PaymentOrder {
 
     public void setStatus(PaymentStatus status) {
         this.status = status;
+    }
+
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
     }
 }

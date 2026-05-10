@@ -1,4 +1,4 @@
-package com.payflow.payflow.model.enums;
+package com.payflow.payflow.core.enums;
 
 public enum PaymentStatus {
 
