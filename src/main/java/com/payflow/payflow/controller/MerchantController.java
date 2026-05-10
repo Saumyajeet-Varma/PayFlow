@@ -4,6 +4,7 @@ import com.payflow.payflow.dto.request.MerchantSignupRequest;
 import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.MerchantResponse;
 import com.payflow.payflow.service.MerchantService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class MerchantController {
     }
 
     @PostMapping("/signup")
-    public ApiResponse<MerchantResponse> signup(@RequestBody MerchantSignupRequest request) {
+    public ApiResponse<MerchantResponse> signup(@Valid @RequestBody MerchantSignupRequest request) {
         return merchantService.signup(request);
     }
 }

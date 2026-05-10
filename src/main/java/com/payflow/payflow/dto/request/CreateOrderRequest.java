@@ -1,9 +1,19 @@
 package com.payflow.payflow.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class CreateOrderRequest {
 
+    @NotNull(message = "Amount is required")
+    @Positive(message = "Amount must be positive")
     private Double amount;
+
+    @NotBlank(message = "Currency is required")
     private String currency;
+
+    @NotNull(message = "Merchant ID is required")
     private Long merchantId;
 
     public CreateOrderRequest() {}
