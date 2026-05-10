@@ -1,6 +1,8 @@
 package com.payflow.payflow.service;
 
-import com.payflow.payflow.core.dto.CreateOrderRequest;
+import com.payflow.payflow.core.dto.request.CreateOrderRequest;
+import com.payflow.payflow.core.dto.response.ApiResponse;
+import com.payflow.payflow.core.dto.response.PaymentOrderResponse;
 import com.payflow.payflow.core.entity.Merchant;
 import com.payflow.payflow.core.entity.PaymentOrder;
 import com.payflow.payflow.core.enums.PaymentStatus;
@@ -19,10 +21,12 @@ public class PaymentOrderService {
         this.merchantRepository = merchantRepository;
     }
 
-    public PaymentOrder createOrder(CreateOrderRequest request) {
+    public ApiResponse<PaymentOrderResponse>
+    createOrder(CreateOrderRequest request) {
 
-        Merchant merchant = merchantRepository.findById(request.getMerchantId())
-                .orElseThrow(() -> new RuntimeException("Merchant not found"));
+        Merchant merchant = merchantRepository
+                .findById(request.getMerchantId())
+                .orElseThrow(() -> new RuntimeException("Merchant Not Found"));
 
         PaymentOrder order = new PaymentOrder();
 
@@ -31,6 +35,19 @@ public class PaymentOrderService {
         order.setStatus(PaymentStatus.CREATED);
         order.setMerchant(merchant);
 
-        return paymentOrderRepository.save(order);
+        PaymentOrder savedOrder = paymentOrderRepository.save(order);
+
+        PaymentOrderResponse response = new PaymentOrderResponse(
+                savedOrder.getId(),
+                savedOrder.getAmount(),
+                savedOrder.getCurrency(),
+                savedOrder.getStatus()
+        );
+
+        return new ApiResponse<>(
+                true,
+                "Order Created Successfully",
+                response
+        );
     }
 }

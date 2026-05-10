@@ -1,7 +1,8 @@
 package com.payflow.payflow.controller;
 
-import com.payflow.payflow.core.dto.MerchantSignupRequest;
-import com.payflow.payflow.core.entity.Merchant;
+import com.payflow.payflow.core.dto.request.MerchantSignupRequest;
+import com.payflow.payflow.core.dto.response.ApiResponse;
+import com.payflow.payflow.core.dto.response.MerchantResponse;
 import com.payflow.payflow.service.MerchantService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +19,17 @@ public class MerchantController {
     }
 
     @GetMapping("/all")
-    public List<Merchant> getAllMerchants() {
+    public ApiResponse<List<MerchantResponse>> getAllMerchants() {
         return merchantService.getAllMerchants();
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteMerchant(@PathVariable Long id) {
+    public ApiResponse<Void> deleteMerchant(@PathVariable Long id) {
         return merchantService.deleteMerchant(id);
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody MerchantSignupRequest request) {
+    public ApiResponse<MerchantResponse> signup(@RequestBody MerchantSignupRequest request) {
         return merchantService.signup(request);
     }
 }
