@@ -1,7 +1,8 @@
 package com.payflow.payflow.controller;
 
+import com.payflow.payflow.core.dto.MerchantSignupRequest;
 import com.payflow.payflow.core.entity.Merchant;
-import com.payflow.payflow.repository.MerchantRepository;
+import com.payflow.payflow.service.MerchantService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,29 +11,24 @@ import java.util.List;
 @RequestMapping("/merchant")
 public class MerchantController {
 
-    private final MerchantRepository merchantRepository;
+    private final MerchantService merchantService;
 
-    public MerchantController(MerchantRepository merchantRepository) {
-        this.merchantRepository = merchantRepository;
+    public MerchantController(MerchantService merchantService) {
+        this.merchantService = merchantService;
     }
 
     @GetMapping("/all")
     public List<Merchant> getAllMerchants() {
-        return merchantRepository.findAll();
+        return merchantService.getAllMerchants();
     }
 
     @DeleteMapping("/delete/{id}")
     public String deleteMerchant(@PathVariable Long id) {
-        merchantRepository.deleteById(id);
-        return "Merchant Deleted Successfully";
+        return merchantService.deleteMerchant(id);
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody Merchant merchant) {
-        if (merchantRepository.existsByEmail(merchant.getEmail())) {
-            return "Merchant already exists";
-        }
-        merchantRepository.save(merchant);
-        return "Merchant Registered Successfully";
+    public String signup(@RequestBody MerchantSignupRequest request) {
+        return merchantService.signup(request);
     }
 }
