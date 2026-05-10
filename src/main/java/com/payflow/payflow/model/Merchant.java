@@ -1,15 +1,29 @@
 package com.payflow.payflow.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Merchant {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
+
+    @Column(unique = true)
     private String email;
 
     public Merchant() {}
 
-    public Merchant(String name, String email) {
+    public Merchant(Long id, String name, String email) {
+        this.id = id;
         this.name = name;
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
