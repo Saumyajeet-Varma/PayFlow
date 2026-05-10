@@ -1,6 +1,6 @@
 package com.payflow.payflow.controller;
 
-import com.payflow.payflow.model.Merchant;
+import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.repository.MerchantRepository;
 import org.springframework.web.bind.annotation.*;
 
