@@ -28,8 +28,7 @@ public class GlobalExceptionHandler {
 
         ex.getBindingResult()
                 .getFieldErrors()
-                .forEach(error ->
-                        errors.put(
+                .forEach(error -> errors.put(
                                 error.getField(),
                                 error.getDefaultMessage()
                         ));
