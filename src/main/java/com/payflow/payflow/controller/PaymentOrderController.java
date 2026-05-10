@@ -1,23 +1,22 @@
 package com.payflow.payflow.controller;
 
-import com.payflow.payflow.core.enums.PaymentStatus;
+import com.payflow.payflow.core.dto.CreateOrderRequest;
 import com.payflow.payflow.core.entity.PaymentOrder;
-import com.payflow.payflow.repository.PaymentOrderRepository;
+import com.payflow.payflow.service.PaymentOrderService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payment")
 public class PaymentOrderController {
 
-    private final PaymentOrderRepository paymentOrderRepository;
+    private final PaymentOrderService paymentOrderService;
 
-    public PaymentOrderController(PaymentOrderRepository paymentOrderRepository) {
-        this.paymentOrderRepository = paymentOrderRepository;
+    public PaymentOrderController(PaymentOrderService paymentOrderService) {
+        this.paymentOrderService = paymentOrderService;
     }
 
     @PostMapping("/create-order")
-    public PaymentOrder createOrder(@RequestBody PaymentOrder paymentOrder) {
-        paymentOrder.setStatus(PaymentStatus.CREATED);
-        return paymentOrderRepository.save(paymentOrder);
+    public PaymentOrder createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
+        return paymentOrderService.createOrder(createOrderRequest);
     }
 }
