@@ -5,6 +5,7 @@ import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.MerchantResponse;
 import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.repository.MerchantRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
 public class MerchantService {
 
     private final MerchantRepository merchantRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MerchantService(MerchantRepository merchantRepository) {
+    public MerchantService(MerchantRepository merchantRepository, PasswordEncoder passwordEncoder) {
         this.merchantRepository = merchantRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ApiResponse<List<MerchantResponse>> getAllMerchants() {
@@ -53,6 +56,11 @@ public class MerchantService {
 
         merchant.setName(request.getName());
         merchant.setEmail(request.getEmail());
+        merchant.setPassword(
+                passwordEncoder.encode(
+                        request.getPassword()
+                )
+        );
 
         Merchant savedMerchant = merchantRepository.save(merchant);
 
