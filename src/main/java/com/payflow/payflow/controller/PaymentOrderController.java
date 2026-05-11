@@ -1,6 +1,7 @@
 package com.payflow.payflow.controller;
 
 import com.payflow.payflow.dto.request.CreateOrderRequest;
+import com.payflow.payflow.dto.request.ProcessPaymentRequest;
 import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.PaymentOrderResponse;
 import com.payflow.payflow.service.PaymentOrderService;
@@ -20,5 +21,10 @@ public class PaymentOrderController {
     @PostMapping("/create-order")
     public ApiResponse<PaymentOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         return paymentOrderService.createOrder(request);
+    }
+
+    @PostMapping("/process/{orderId}")
+    public ApiResponse<PaymentOrderResponse> processPayment(@PathVariable long orderId, @Valid @RequestBody ProcessPaymentRequest request) {
+        return paymentOrderService.processPayment(orderId, request);
     }
 }
