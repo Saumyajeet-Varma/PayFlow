@@ -1,8 +1,10 @@
 package com.payflow.payflow.service;
 
+import com.payflow.payflow.dto.request.MerchantLoginRequest;
 import com.payflow.payflow.dto.request.MerchantSignupRequest;
 import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.MerchantResponse;
+import com.payflow.payflow.exception.ResourceNotFoundException;
 import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.repository.MerchantRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,10 +17,12 @@ public class MerchantService {
 
     private final MerchantRepository merchantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public MerchantService(MerchantRepository merchantRepository, PasswordEncoder passwordEncoder) {
+    public MerchantService(MerchantRepository merchantRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.merchantRepository = merchantRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public ApiResponse<List<MerchantResponse>> getAllMerchants() {
@@ -74,6 +78,36 @@ public class MerchantService {
                 true,
                 "Merchant Registered Successfully",
                 response
+        );
+    }
+
+    public ApiResponse<String>
+    login(MerchantLoginRequest request) {
+
+        Merchant merchant = merchantRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant Not Found"));
+
+        boolean passwordMatches = passwordEncoder.matches(
+                        request.getPassword(),
+                        merchant.getPassword()
+                );
+
+        if (!passwordMatches) {
+
+            return new ApiResponse<>(
+                    false,
+                    "Invalid Credentials",
+                    null
+            );
+        }
+
+        String token = jwtService.generateToken(merchant.getEmail());
+
+        return new ApiResponse<>(
+                true,
+                "Login Successful",
+                token
         );
     }
 

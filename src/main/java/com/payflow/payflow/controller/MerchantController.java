@@ -1,5 +1,6 @@
 package com.payflow.payflow.controller;
 
+import com.payflow.payflow.dto.request.MerchantLoginRequest;
 import com.payflow.payflow.dto.request.MerchantSignupRequest;
 import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.MerchantResponse;
@@ -32,5 +33,10 @@ public class MerchantController {
     @PostMapping("/signup")
     public ApiResponse<MerchantResponse> signup(@Valid @RequestBody MerchantSignupRequest request) {
         return merchantService.signup(request);
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<String> login(@Valid @RequestBody MerchantLoginRequest request) {
+        return merchantService.login(request);
     }
 }
