@@ -7,9 +7,12 @@ import com.payflow.payflow.dto.response.PaymentOrderResponse;
 import com.payflow.payflow.exception.ResourceNotFoundException;
 import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.model.entity.PaymentOrder;
+import com.payflow.payflow.model.entity.PaymentTransaction;
 import com.payflow.payflow.model.enums.PaymentStatus;
+import com.payflow.payflow.model.enums.TransactionStatus;
 import com.payflow.payflow.repository.MerchantRepository;
 import com.payflow.payflow.repository.PaymentOrderRepository;
+import com.payflow.payflow.repository.PaymentTransactionRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,10 +20,12 @@ public class PaymentOrderService {
 
     private final PaymentOrderRepository paymentOrderRepository;
     private final MerchantRepository merchantRepository;
+    private final PaymentTransactionRepository paymentTransactionRepository;
 
-    public PaymentOrderService(PaymentOrderRepository paymentOrderRepository, MerchantRepository merchantRepository) {
+    public PaymentOrderService(PaymentOrderRepository paymentOrderRepository, MerchantRepository merchantRepository, PaymentTransactionRepository paymentTransactionRepository) {
         this.paymentOrderRepository = paymentOrderRepository;
         this.merchantRepository = merchantRepository;
+        this.paymentTransactionRepository = paymentTransactionRepository;
     }
 
     public ApiResponse<PaymentOrderResponse> createOrder(CreateOrderRequest request) {
@@ -69,26 +74,37 @@ public class PaymentOrderService {
 
         order.setStatus(PaymentStatus.PROCESSING);
 
-        /*
-            Simulate payment success/failure
-        */
+        paymentOrderRepository.save(order);
 
+        PaymentTransaction transaction = new PaymentTransaction();
+
+        transaction.setAmount(order.getAmount());
+        transaction.setPaymentMethod(request.getPaymentMethod());
+        transaction.setPaymentOrder(order);
+        transaction.setStatus(TransactionStatus.INITIATED);
+
+        paymentTransactionRepository.save(transaction);
+
+        // Simulate payment success/failure
         boolean paymentSuccess = Math.random() > 0.2;
 
         if(paymentSuccess) {
             order.setStatus(PaymentStatus.SUCCESS);
+            transaction.setStatus(TransactionStatus.SUCCESS);
         }
         else {
             order.setStatus(PaymentStatus.FAILED);
+            transaction.setStatus(TransactionStatus.FAILED);
         }
 
-        PaymentOrder savedOrder = paymentOrderRepository.save(order);
+        paymentOrderRepository.save(order);
+        paymentTransactionRepository.save(transaction);
 
         PaymentOrderResponse response = new PaymentOrderResponse(
-                savedOrder.getId(),
-                savedOrder.getAmount(),
-                savedOrder.getCurrency(),
-                savedOrder.getStatus()
+                order.getId(),
+                order.getAmount(),
+                order.getCurrency(),
+                order.getStatus()
         );
 
         return new ApiResponse<>(
