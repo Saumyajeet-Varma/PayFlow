@@ -3,6 +3,8 @@ package com.payflow.payflow.model.entity;
 import com.payflow.payflow.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class PaymentOrder {
 
@@ -20,6 +22,9 @@ public class PaymentOrder {
     @ManyToOne
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
+
+    @OneToMany(mappedBy = "paymentOrder")
+    private List<PaymentTransaction> transactions;
 
     public PaymentOrder() {}
 
