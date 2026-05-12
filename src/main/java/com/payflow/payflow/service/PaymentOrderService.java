@@ -21,11 +21,13 @@ public class PaymentOrderService {
     private final PaymentOrderRepository paymentOrderRepository;
     private final MerchantRepository merchantRepository;
     private final PaymentTransactionRepository paymentTransactionRepository;
+    private final MerchantService merchantService;
 
-    public PaymentOrderService(PaymentOrderRepository paymentOrderRepository, MerchantRepository merchantRepository, PaymentTransactionRepository paymentTransactionRepository) {
+    public PaymentOrderService(PaymentOrderRepository paymentOrderRepository, MerchantRepository merchantRepository, PaymentTransactionRepository paymentTransactionRepository, MerchantService merchantService) {
         this.paymentOrderRepository = paymentOrderRepository;
         this.merchantRepository = merchantRepository;
         this.paymentTransactionRepository = paymentTransactionRepository;
+        this.merchantService = merchantService;
     }
 
     public ApiResponse<PaymentOrderResponse> createOrder(CreateOrderRequest request) {
@@ -62,6 +64,17 @@ public class PaymentOrderService {
         PaymentOrder order = paymentOrderRepository
                 .findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        Merchant loggedInMerchant = merchantService.getLoggedInMerchant();
+
+        if (!order.getMerchant().getId().equals(loggedInMerchant.getId())) {
+
+            return new ApiResponse<>(
+                    false,
+                    "Access Denied",
+                    null
+            );
+        }
 
         if(order.getStatus() != PaymentStatus.CREATED) {
 

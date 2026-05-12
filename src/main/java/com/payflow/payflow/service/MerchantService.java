@@ -7,6 +7,8 @@ import com.payflow.payflow.dto.response.MerchantResponse;
 import com.payflow.payflow.exception.ResourceNotFoundException;
 import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.repository.MerchantRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,8 +83,7 @@ public class MerchantService {
         );
     }
 
-    public ApiResponse<String>
-    login(MerchantLoginRequest request) {
+    public ApiResponse<String> login(MerchantLoginRequest request) {
 
         Merchant merchant = merchantRepository
                 .findByEmail(request.getEmail())
@@ -129,5 +130,18 @@ public class MerchantService {
                 "Merchant Deleted Successfully",
                 null
         );
+    }
+
+    public Merchant getLoggedInMerchant() {
+
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String email = authentication.getName();
+
+        return merchantRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant Not Found"));
     }
 }
