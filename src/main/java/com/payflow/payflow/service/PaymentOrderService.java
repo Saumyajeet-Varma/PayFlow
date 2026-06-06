@@ -4,6 +4,7 @@ import com.payflow.payflow.dto.request.CreateOrderRequest;
 import com.payflow.payflow.dto.request.ProcessPaymentRequest;
 import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.PaymentOrderResponse;
+import com.payflow.payflow.dto.response.RefundResponse;
 import com.payflow.payflow.exception.ResourceNotFoundException;
 import com.payflow.payflow.model.entity.Merchant;
 import com.payflow.payflow.model.entity.PaymentOrder;
@@ -123,6 +124,57 @@ public class PaymentOrderService {
         return new ApiResponse<>(
                 true,
                 "Payment processed",
+                response
+        );
+    }
+
+    public ApiResponse<RefundResponse> refundPayment(Long orderId) {
+
+        PaymentOrder order = paymentOrderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        Merchant loggedInMerchant = merchantService.getLoggedInMerchant();
+
+        if(!order.getMerchant().getId().equals(loggedInMerchant.getId())) {
+
+            return new ApiResponse<>(
+                    false,
+                    "Access Denied",
+                    null
+            );
+        }
+
+        if(order.getStatus() != PaymentStatus.SUCCESS) {
+
+            return new ApiResponse<>(
+                    false,
+                    "Only successful payments can be refunded",
+                    null
+            );
+        }
+
+        PaymentTransaction transaction = new PaymentTransaction();
+
+        transaction.setAmount(order.getAmount());
+        transaction.setPaymentMethod("REFUND");
+        transaction.setStatus(TransactionStatus.REFUNDED);
+        transaction.setPaymentOrder(order);
+
+        paymentTransactionRepository.save(transaction);
+
+        order.setStatus(PaymentStatus.REFUNDED);
+
+        paymentOrderRepository.save(order);
+
+        RefundResponse response = new RefundResponse(
+                order.getId(),
+                order.getStatus()
+        );
+
+        return new ApiResponse<>(
+                true,
+                "Refund Processing Successfully",
                 response
         );
     }

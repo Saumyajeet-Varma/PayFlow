@@ -4,6 +4,7 @@ import com.payflow.payflow.dto.request.CreateOrderRequest;
 import com.payflow.payflow.dto.request.ProcessPaymentRequest;
 import com.payflow.payflow.dto.response.ApiResponse;
 import com.payflow.payflow.dto.response.PaymentOrderResponse;
+import com.payflow.payflow.dto.response.RefundResponse;
 import com.payflow.payflow.service.PaymentOrderService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,12 @@ public class PaymentOrderController {
     }
 
     @PostMapping("/process/{orderId}")
-    public ApiResponse<PaymentOrderResponse> processPayment(@PathVariable long orderId, @Valid @RequestBody ProcessPaymentRequest request) {
+    public ApiResponse<PaymentOrderResponse> processPayment(@PathVariable Long orderId, @Valid @RequestBody ProcessPaymentRequest request) {
         return paymentOrderService.processPayment(orderId, request);
+    }
+
+    @PostMapping("/refund/{orderId}")
+    public ApiResponse<RefundResponse> refundPayment(@PathVariable Long orderId) {
+        return paymentOrderService.refundPayment(orderId);
     }
 }
