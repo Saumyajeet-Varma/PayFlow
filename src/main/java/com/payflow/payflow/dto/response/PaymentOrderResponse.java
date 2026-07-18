@@ -33,4 +33,20 @@ public class PaymentOrderResponse {
     public PaymentStatus getStatus() {
         return status;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
 }

@@ -13,12 +13,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ApiResponse<Void> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ApiResponse.error(ex.getMessage());
+    }
 
-        return new ApiResponse<>(
-                false,
-                ex.getMessage(),
-                null
-        );
+    @ExceptionHandler(IdempotencyConflictException.class)
+    public ApiResponse<Void> handleIdempotencyConflict(IdempotencyConflictException ex) {
+        return ApiResponse.error(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -29,14 +29,10 @@ public class GlobalExceptionHandler {
         ex.getBindingResult()
                 .getFieldErrors()
                 .forEach(error -> errors.put(
-                                error.getField(),
-                                error.getDefaultMessage()
-                        ));
+                        error.getField(),
+                        error.getDefaultMessage()
+                ));
 
-        return new ApiResponse<>(
-                false,
-                "Validation Failed",
-                errors
-        );
+        return ApiResponse.error("Validation failed", errors);
     }
 }

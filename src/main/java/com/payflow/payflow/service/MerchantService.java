@@ -29,57 +29,30 @@ public class MerchantService {
 
     public ApiResponse<List<MerchantResponse>> getAllMerchants() {
 
-        List<Merchant> merchants = merchantRepository.findAll();
-
-        List<MerchantResponse> response = merchants
+        List<MerchantResponse> merchants = merchantRepository.findAll()
                 .stream()
-                .map(merchant -> new MerchantResponse(
-                        merchant.getId(),
-                        merchant.getName(),
-                        merchant.getEmail()
-                ))
+                .map(this::toMerchantResponse)
                 .toList();
 
-        return new ApiResponse<>(
-                true,
-                "Merchants fetched successfully",
-                response
-        );
+        return ApiResponse.success("Merchants fetched successfully", merchants);
     }
 
     public ApiResponse<MerchantResponse> signup(MerchantSignupRequest request) {
 
         if (merchantRepository.existsByEmail(request.getEmail())) {
-
-            return new ApiResponse<>(
-                    false,
-                    "Merchant already exists",
-                    null
-            );
+            return ApiResponse.error("Merchant already exists");
         }
 
         Merchant merchant = new Merchant();
-
         merchant.setName(request.getName());
         merchant.setEmail(request.getEmail());
-        merchant.setPassword(
-                passwordEncoder.encode(
-                        request.getPassword()
-                )
-        );
+        merchant.setPassword(passwordEncoder.encode(request.getPassword()));
 
         Merchant savedMerchant = merchantRepository.save(merchant);
 
-        MerchantResponse response = new MerchantResponse(
-                savedMerchant.getId(),
-                savedMerchant.getName(),
-                savedMerchant.getEmail()
-        );
-
-        return new ApiResponse<>(
-                true,
-                "Merchant Registered Successfully",
-                response
+        return ApiResponse.success(
+                "Merchant registered successfully",
+                toMerchantResponse(savedMerchant)
         );
     }
 
@@ -87,49 +60,26 @@ public class MerchantService {
 
         Merchant merchant = merchantRepository
                 .findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("Merchant Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant not found"));
 
-        boolean passwordMatches = passwordEncoder.matches(
-                        request.getPassword(),
-                        merchant.getPassword()
-                );
-
-        if (!passwordMatches) {
-
-            return new ApiResponse<>(
-                    false,
-                    "Invalid Credentials",
-                    null
-            );
+        if (!passwordEncoder.matches(request.getPassword(), merchant.getPassword())) {
+            return ApiResponse.error("Invalid credentials");
         }
 
         String token = jwtService.generateToken(merchant.getEmail());
 
-        return new ApiResponse<>(
-                true,
-                "Login Successful",
-                token
-        );
+        return ApiResponse.success("Login successful", token);
     }
 
     public ApiResponse<Void> deleteMerchant(Long id) {
 
         if (!merchantRepository.existsById(id)) {
-
-            return new ApiResponse<>(
-                    false,
-                    "Merchant Not Found",
-                    null
-            );
+            return ApiResponse.error("Merchant not found");
         }
 
         merchantRepository.deleteById(id);
 
-        return new ApiResponse<>(
-                true,
-                "Merchant Deleted Successfully",
-                null
-        );
+        return ApiResponse.success("Merchant deleted successfully", null);
     }
 
     public Merchant getLoggedInMerchant() {
@@ -142,6 +92,14 @@ public class MerchantService {
 
         return merchantRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Merchant Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant not found"));
+    }
+
+    private MerchantResponse toMerchantResponse(Merchant merchant) {
+        return new MerchantResponse(
+                merchant.getId(),
+                merchant.getName(),
+                merchant.getEmail()
+        );
     }
 }

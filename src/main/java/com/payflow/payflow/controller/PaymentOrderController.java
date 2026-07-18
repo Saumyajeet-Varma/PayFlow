@@ -25,8 +25,8 @@ public class PaymentOrderController {
     }
 
     @PostMapping("/process/{orderId}")
-    public ApiResponse<PaymentOrderResponse> processPayment(@PathVariable Long orderId, @Valid @RequestBody ProcessPaymentRequest request) {
-        return paymentOrderService.processPayment(orderId, request);
+    public ApiResponse<PaymentOrderResponse> processPayment(@PathVariable Long orderId, @RequestHeader("Idempotency-Key") String idempotencyKey, @Valid @RequestBody ProcessPaymentRequest request) {
+        return paymentOrderService.processPayment(orderId, idempotencyKey, request);
     }
 
     @PostMapping("/refund/{orderId}")
